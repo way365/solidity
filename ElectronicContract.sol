@@ -24,12 +24,12 @@ contract ElectronicContract {
     event SignatureVerified(address indexed signer, bytes32 r, bytes32 s, uint8 v);
 
     modifier onlyNotary() {
-        require(msg.sender == notary, "msg.sender == notary");
+        require(msg.sender == notary, "onlyNotary msg.sender == notary");
         _;
     }
 
     modifier onlySigner() {
-        require(isSigner(msg.sender), "_isSigner(msg.sender)");
+        require(isSigner(msg.sender), "onlySigner _isSigner(msg.sender)");
         _;
     }
 
