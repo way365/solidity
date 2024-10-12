@@ -24,17 +24,17 @@ contract ElectronicContract {
     event SignatureVerified(address indexed signer, bytes32 r, bytes32 s, uint8 v);
 
     modifier onlyNotary() {
-        require(msg.sender == notary);
+        require(msg.sender == notary, "msg.sender == notary");
         _;
     }
 
     modifier onlySigner() {
-        require(isSigner(msg.sender));
+        require(isSigner(msg.sender), "_isSigner(msg.sender)");
         _;
     }
 
     constructor(address[] _signers, address _notary, string _contractHash) public {
-        require(_signers.length > 0);
+        require(_signers.length > 0, "_signers.length > 0");
         owner = msg.sender;
         signers = _signers;
         notary = _notary;
@@ -53,9 +53,9 @@ contract ElectronicContract {
     }
 
     function signContract(bytes32 r, bytes32 s, uint8 v) public onlySigner {
-        require(!hasSigned[msg.sender]);
-        require(!isFinalized);
-        require(verifySignature(msg.sender, r, s, v));
+        require(!hasSigned[msg.sender], "!hasSigned[msg.sender]");
+        require(!isFinalized, "_!isFinalized");
+        require(verifySignature(msg.sender, r, s, v), "verifySignature(msg.sender, r, s, v)");
 
         hasSigned[msg.sender] = true;
         signatures[msg.sender] = Signature(msg.sender, r, s, v);
@@ -81,16 +81,9 @@ contract ElectronicContract {
     }
 
     function finalizeContract() internal {
-        require(signCount >= requiredSignatures);
-        notarizeContract();
-    }
-
-    function notarizeContract() public onlyNotary {
-        require(signCount >= requiredSignatures);
-        require(!isFinalized);
-
+        require(signCount >= requiredSignatures, " finalizeContract signCount >= requiredSignatures");
         isFinalized = true;
-        emit ContractFinalized(notary, contractHash);  
+        emit ContractFinalized(notary, contractHash); 
     }
 
     // 获取合约哈希
